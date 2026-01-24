@@ -1,0 +1,26 @@
+# Rust
+/target/
+Cargo.lock
+
+# WASM
+*.wasm
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Idris2
+*.ibc
+*.ttc
+
+# Zig
+zig-cache/
+zig-out/

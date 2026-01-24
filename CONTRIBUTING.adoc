@@ -1,0 +1,100 @@
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Contributing to selur
+:toc:
+
+== Welcome
+
+Thank you for contributing to selur, the Ephapax-linear WASM sealant for Svalinn and Vörðr!
+
+== Development Setup
+
+[source,bash]
+----
+# Clone repository
+git clone https://github.com/hyperpolymath/selur
+cd selur
+
+# Install dependencies
+# - Zig (for WASM compilation)
+# - Ephapax compiler (for .eph → IR)
+# - Idris2 (for formal verification)
+# - Rust (for bindings)
+
+# Build
+just build
+
+# Test
+just test
+
+# Verify proofs
+just verify
+----
+
+== Areas for Contribution
+
+[cols="2,3,2", options="header"]
+|===
+|Area |Examples |Difficulty
+
+|Ephapax Bridge
+|Improve request/response types, add error handling
+|Hard
+
+|Zig WASM Compiler
+|Optimize memory layout, reduce binary size
+|Medium
+
+|Idris2 Proofs
+|Prove additional properties, simplify existing proofs
+|Hard
+
+|Rust Bindings
+|Add convenience APIs, improve error messages
+|Easy
+
+|Documentation
+|Examples, integration guides, tutorials
+|Easy
+
+|Benchmarking
+|Compare vs JSON/HTTP, gRPC, measure overhead
+|Medium
+|===
+
+== Code Standards
+
+* **Ephapax**: Follow linear type conventions, document regions
+* **Zig**: Use `zig fmt`, optimize for WASM32 size
+* **Idris2**: Literate proofs, clear theorem statements
+* **Rust**: `cargo fmt` and `cargo clippy` clean
+* **SPDX headers**: All files must have license headers
+
+== Pull Request Process
+
+1. Fork the repository
+2. Create a branch: `git checkout -b improve-ipc-latency`
+3. Make changes with SPDX headers
+4. Run `just check` and `just test`
+5. Run `just verify` if modifying Idris2 proofs
+6. Commit with conventional commits:
++
+[source]
+----
+feat: add support for streaming responses
+fix: reduce WASM binary size by 20%
+docs: add integration example for Svalinn
+proof: simplify noLostRequests theorem
+----
+7. Submit PR with clear description
+
+== Community
+
+* **Questions**: Open a GitHub Discussion
+* **Bugs**: Open an issue with `bug` label
+* **Features**: Open an issue with `enhancement` label
+* **Proofs**: Open an issue with `formal-verification` label
+
+== License
+
+By contributing, you agree that your contributions will be licensed under PMPL-1.0-or-later.

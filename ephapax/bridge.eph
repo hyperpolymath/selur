@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
+//
+// Ephapax-linear bridge definition for zero-copy IPC between Svalinn and Vörðr
+
+// Core types for request/response handling
+type Request = {
+    method: String,
+    path: String,
+    headers: Map<String, String>,
+    body: Bytes
+}
+
+type Response = {
+    status: Int,
+    headers: Map<String, String>,
+    body: Bytes
+}
+
+// Linear region for zero-copy IPC
+region r:
+  // Consume a request from Svalinn (edge gateway)
+  let req = Svalinn.receive_request@r()
+
+  // Delegate to Vörðr (container runtime) with zero-copy
+  let resp = Vordr.handle_request@r(req)
+
+  // Return response to Svalinn
+  Svalinn.send_response@r(resp)
+
+// Policy validation (shared between Svalinn and Vörðr)
+region policy:
+  let validate_request@policy(req: Request) -> Bool =
+    let has_valid_auth = check_jwt@policy(req.headers)
+    let has_valid_sbom = verify_sbom@policy(req)
+    has_valid_auth && has_valid_sbom
