@@ -22,3 +22,7 @@ criterion = "0.5"
 [lib]
 name = "selur"
 path = "src/lib.rs"
+
+[[example]]
+name = "basic"
+path = "examples/basic/main.rs"
