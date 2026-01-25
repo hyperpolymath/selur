@@ -13,12 +13,17 @@ pub fn build(b: *std.Build) void {
 
     const optimize = b.standardOptimizeOption(.{});
 
-    // Build selur.wasm
-    const wasm = b.addExecutable(.{
-        .name = "selur",
+    // Create root module for selur
+    const root_module = b.createModule(.{
         .root_source_file = b.path("runtime.zig"),
         .target = target,
         .optimize = optimize,
+    });
+
+    // Build selur.wasm
+    const wasm = b.addExecutable(.{
+        .name = "selur",
+        .root_module = root_module,
     });
 
     // WASM-specific settings

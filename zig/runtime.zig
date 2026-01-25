@@ -50,7 +50,7 @@ const ErrorCode = enum(u32) {
 };
 
 // Export: Allocate memory in WASM linear memory
-export fn allocate(size: u32) callconv(.C) u32 {
+export fn allocate(size: u32)  u32 {
     if (size > MAX_REQUEST_SIZE) {
         @panic("Allocation too large");
     }
@@ -66,14 +66,14 @@ export fn allocate(size: u32) callconv(.C) u32 {
 }
 
 // Export: Free memory (placeholder - linear types handle this)
-export fn deallocate(ptr: u32, size: u32) callconv(.C) void {
+export fn deallocate(ptr: u32, size: u32)  void {
     _ = ptr;
     _ = size;
     // TODO: Implement proper deallocation when needed
 }
 
 // Export: Send request from Svalinn to Vörðr
-export fn send_request(request_ptr: u32, request_len: u32) callconv(.C) u32 {
+export fn send_request(request_ptr: u32, request_len: u32)  u32 {
     // Bounds check
     if (request_len > MAX_REQUEST_SIZE) {
         return @intFromEnum(ErrorCode.InvalidRequest);
@@ -89,7 +89,7 @@ export fn send_request(request_ptr: u32, request_len: u32) callconv(.C) u32 {
 }
 
 // Export: Get response from Vörðr to Svalinn
-export fn get_response(response_ptr: u32) callconv(.C) u32 {
+export fn get_response(response_ptr: u32)  u32 {
     // Bounds check
     if (response_ptr + @sizeOf(Response) > memory.len) {
         return @intFromEnum(ErrorCode.InvalidRequest);
@@ -108,11 +108,11 @@ export fn get_response(response_ptr: u32) callconv(.C) u32 {
 }
 
 // Export: Get memory pointer (for debugging)
-export fn get_memory_ptr() callconv(.C) [*]u8 {
+export fn get_memory_ptr()  [*]u8 {
     return &memory;
 }
 
 // Export: Get memory size
-export fn get_memory_size() callconv(.C) u32 {
+export fn get_memory_size()  u32 {
     return memory.len;
 }

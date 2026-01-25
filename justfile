@@ -11,8 +11,8 @@ test:
     @echo "Running Rust tests..."
     cargo test
     @echo "Verifying Idris2 proofs..."
-    cd idris && idris2 --check proofs.idr
-    cd idris && idris2 --check theorems.idr
+    cd idris && idris2 --check Proofs.idr
+    cd idris && idris2 --check Theorems.idr
 
 # Check code quality
 check:
@@ -40,8 +40,8 @@ bench:
 # Verify Idris2 proofs
 verify:
     @echo "Verifying Idris2 proofs..."
-    cd idris && idris2 --check proofs.idr
-    cd idris && idris2 --check theorems.idr
+    cd idris && idris2 --check Proofs.idr
+    cd idris && idris2 --check Theorems.idr
     @echo "✓ All proofs verified"
 
 # List all tasks
