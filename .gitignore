@@ -1,26 +1,32 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+
 # Rust
 /target/
 Cargo.lock
+**/*.rs.bk
+*.pdb
 
-# WASM
+# Zig
+zig/.zig-cache/
+zig/zig-out/
 *.wasm
-build/
 
-# IDE
+# Idris2
+idris/build/
+*.ibc
+*.ttc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Idris2
-*.ibc
-*.ttc
-
-# Zig
-zig-cache/
-zig-out/
+# Temporary
+*.tmp
+*.log
