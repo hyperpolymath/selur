@@ -16,13 +16,13 @@
        (tech-stack . ("Ephapax-linear" "Zig" "WASM32" "Idris2" "Rust"))))
 
     (current-position
-      ((phase . "v0.2-ephapax - In Progress")
-       (overall-completion . 45)
+      ((phase . "v0.2-ephapax - 60% Complete")
+       (overall-completion . 60)
        (components
          ((ephapax-bridge . 60)          ;; bridge.eph and types.eph created
-          (zig-wasm-compiler . 70)       ;; build.zig and runtime.zig complete
-          (idris2-proofs . 65)           ;; proofs.idr and theorems.idr created
-          (rust-bindings . 30)           ;; lib.rs with Bridge struct
+          (zig-wasm-compiler . 100)      ;; ✓ COMPLETE: compiles to selur.wasm (527KB)
+          (idris2-proofs . 100)          ;; ✓ COMPLETE: all proofs verify with just verify
+          (rust-bindings . 70)           ;; send_request() implemented, compiles
           (documentation . 85)           ;; README, ROADMAP, .scm files done
           (examples . 0)))               ;; Not started
        (working-features
@@ -31,10 +31,12 @@
           "License (PMPL-1.0-or-later) in place"
           "Ephapax bridge.eph with linear type definitions"
           "Ephapax types.eph with core IPC types"
-          "Zig WASM runtime with memory management"
-          "Zig build system configured for WASM32"
-          "Idris2 proofs (noLostRequests, noMemoryLeaks, etc.)"
-          "Idris2 theorems (correctness, safety, liveness)"
+          "✓ Zig WASM runtime with memory management"
+          "✓ Zig build system configured for WASM32 (0.16.0-dev compatible)"
+          "✓ WASM compiles successfully: zig-out/bin/selur.wasm (527KB)"
+          "✓ Idris2 proofs type-check (Proofs.idr, Theorems.idr)"
+          "✓ Idris2 verification passes: just verify"
+          "✓ Rust Bridge::send_request() implemented with Wasmtime"
           "justfile with build/test/verify commands"
           "Security audit complete (SECURITY-AUDIT-2026-01-25.md)"))))
 
@@ -135,4 +137,19 @@
              "Updated STATE.scm to reflect progress (15% → 45%)"
              "Milestone v0.1-setup marked complete"
              "Milestone v0.2-ephapax started"))
-          (next-session . "Test WASM compilation, implement Rust Bridge::send_request, create examples"))))))))
+          (next-session . "Test WASM compilation, implement Rust Bridge::send_request, create examples")))
+       (session-003
+         ((date . "2026-01-25")
+          (accomplishments
+            ("✓ Fixed Zig 0.16.0-dev API compatibility (build.zig)"
+             "✓ Removed callconv(.C) from WASM export functions"
+             "✓ Successfully compiled selur.wasm (527KB) with just build"
+             "✓ Renamed proofs.idr → Proofs.idr, theorems.idr → Theorems.idr"
+             "✓ Added public export declarations to all Idris2 types/functions"
+             "✓ Fixed Idris2 module names and Vect operations"
+             "✓ All proofs verify successfully: just verify passes"
+             "✓ Implemented Rust Bridge::send_request() with WASM memory I/O"
+             "✓ Rust bindings compile successfully: cargo check passes"
+             "✓ Updated STATE.scm (45% → 60% completion)"
+             "Commit 13aa8e1: Fix Zig and Idris2 compilation issues"))
+          (next-session . "Create example integration, add CI workflow, push v0.2 milestone"))))))))
