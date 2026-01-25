@@ -53,12 +53,56 @@ vordr_handle req =
     _ ->
       error_response "Unknown command"
 
-// Container operations (to be implemented by Vörðr)
+// Container operations (implemented for Vörðr integration)
 create_container :: ContainerConfig@r -> Response@r
+create_container config =
+  -- Validate container configuration
+  if config_name config == "" then
+    mk_error_response InvalidRequest "Container name required"
+  else
+    -- Allocate new container ID
+    let container_id = allocate_container_id () in
+    -- Create container in Vörðr runtime
+    vordr_create_container container_id config
+    -- Return success response with container ID
+    mk_success_response (encode_container_id container_id)
+
 start_container :: ContainerId@r -> Response@r
+start_container id =
+  -- Check if container exists
+  if not (vordr_container_exists id) then
+    mk_error_response ContainerNotFound "Container does not exist"
+  else
+    -- Start the container
+    vordr_start_container id
+    -- Return success response
+    mk_success_response (encode_status "running")
+
 stop_container :: ContainerId@r -> Response@r
+stop_container id =
+  -- Check if container exists
+  if not (vordr_container_exists id) then
+    mk_error_response ContainerNotFound "Container does not exist"
+  else
+    -- Stop the container gracefully
+    vordr_stop_container id
+    -- Return success response
+    mk_success_response (encode_status "stopped")
+
 inspect_container :: ContainerId@r -> Response@r
+inspect_container id =
+  -- Check if container exists
+  if not (vordr_container_exists id) then
+    mk_error_response ContainerNotFound "Container does not exist"
+  else
+    -- Get container state from Vörðr
+    let state = vordr_get_container_state id in
+    -- Return state as response
+    mk_success_response (encode_container_state state)
+
 error_response :: String -> Response@r
+error_response msg =
+  mk_error_response InvalidRequest msg
 
 // Constants
 MAX_REQUEST_SIZE :: Int
@@ -66,7 +110,43 @@ MAX_REQUEST_SIZE = 1048576  -- 1 MB
 
 // Helper functions for request introspection
 request_size :: Request@r -> Int
+request_size (Request cmd payload corr_id) = bytes_length payload
+
 request_command :: Request@r -> Command@r
+request_command (Request cmd payload corr_id) = cmd
+
+// Response construction helpers
+mk_success_response :: Bytes@r -> Response@r
+mk_success_response payload =
+  Response Success payload (generate_correlation_id ())
+
+mk_error_response :: ResponseStatus -> String -> Response@r
+mk_error_response status msg =
+  Response status (string_to_bytes msg) (generate_correlation_id ())
+
+// Configuration helpers
+config_name :: ContainerConfig@r -> String
+config_image :: ContainerConfig@r -> String
+config_volumes :: ContainerConfig@r -> [VolumeMount@r]
+config_network :: ContainerConfig@r -> NetworkConfig@r
+
+// FFI declarations for Vörðr runtime
+foreign import vordr_create_container :: ContainerId@r -> ContainerConfig@r -> Response@r
+foreign import vordr_start_container :: ContainerId@r -> Response@r
+foreign import vordr_stop_container :: ContainerId@r -> Response@r
+foreign import vordr_get_container_state :: ContainerId@r -> ContainerState@r
+foreign import vordr_container_exists :: ContainerId@r -> Bool
+foreign import allocate_container_id :: () -> ContainerId@r
+foreign import generate_correlation_id :: () -> String
+
+// Encoding helpers for response payloads
+encode_container_id :: ContainerId@r -> Bytes@r
+encode_status :: String -> Bytes@r
+encode_container_state :: ContainerState@r -> Bytes@r
+
+// Utility functions
+bytes_length :: Bytes@r -> Int
+string_to_bytes :: String -> Bytes@r
 
 // Export bridge function for WASM compilation
 export bridge

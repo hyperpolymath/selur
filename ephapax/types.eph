@@ -92,6 +92,28 @@ data PortMapping = PortMapping
 
 data Protocol = TCP | UDP
 
+// Container state (for inspect operations)
+data ContainerState@r = ContainerState
+  { id :: ContainerId@r
+  , status :: ContainerStatus
+  , image :: ImageRef@r
+  , created_at :: Int  -- Unix timestamp
+  , started_at :: Maybe Int
+  , finished_at :: Maybe Int
+  , exit_code :: Maybe Int
+  , config :: ContainerConfig@r
+  , mounts :: List VolumeMount@r
+  , network :: NetworkConfig@r
+  }
+
+data ContainerStatus
+  = Created
+  | Running
+  | Paused
+  | Stopped
+  | Exited
+  | Dead
+
 // Container identifier
 data ContainerId@r = ContainerId String
 

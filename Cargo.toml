@@ -26,3 +26,11 @@ path = "src/lib.rs"
 [[example]]
 name = "basic"
 path = "examples/basic/main.rs"
+
+[[example]]
+name = "error_handling"
+path = "examples/error_handling/main.rs"
+
+[[bench]]
+name = "ipc_benchmark"
+harness = false
