@@ -223,4 +223,23 @@
              "✓ Documented zero-copy IPC benefits (0 copies vs 4 copies for JSON/HTTP)"
              "✓ Confirmed selur-compose will be separate repo (future work)"
              "✓ Integration testing (Option 1) foundation complete"))
-          (next-session . "Test integrations end-to-end, begin Option 2 (v1.1 async), plan selur-compose repo"))))))
+          (next-session . "Test integrations end-to-end, begin Option 2 (v1.1 async), plan selur-compose repo")))
+       (session-008
+         ((date . "2026-01-25")
+          (accomplishments
+            ("✓ Created selur-compose repository (separate repo as planned)"
+             "✓ selur-compose: Comprehensive README.adoc (specification, architecture, 25+ commands)"
+             "✓ selur-compose: ECOSYSTEM.scm clarifying single integrated tool (NOT 4 separate compose tools)"
+             "✓ selur-compose: META.scm with 6 architecture decisions (TOML, Rust, integrated, etc.)"
+             "✓ selur-compose: STATE.scm tracking project state"
+             "✓ selur-compose: Cargo.toml with dependencies (clap, toml, serde, tokio, petgraph)"
+             "✓ selur-compose: src/main.rs CLI skeleton (25 commands defined)"
+             "✓ selur-compose: src/compose.rs TOML parser with validation"
+             "✓ selur-compose: src/graph.rs dependency resolution (topological sort)"
+             "✓ selur-compose: src/ct.rs Cerro Torre wrapper (pack/verify/push/pull)"
+             "✓ selur-compose: src/svalinn.rs gateway client stub"
+             "✓ selur-compose: src/vordr.rs orchestrator client stub"
+             "✓ selur-compose: examples/basic/ web app stack example"
+             "✓ Confirmed architecture: selur-compose uses ct, Svalinn, selur, Vörðr as integrated components"
+             "✓ Repository committed locally (user needs to push to GitHub)"))
+          (next-session . "Test selur-compose basic example, implement up/down commands, integrate with Svalinn API"))))))
