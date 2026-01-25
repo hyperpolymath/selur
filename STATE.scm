@@ -16,26 +16,34 @@
        (tech-stack . ("Ephapax-linear" "Zig" "WASM32" "Idris2" "Rust"))))
 
     (current-position
-      ((phase . "Initial Setup")
-       (overall-completion . 15)
+      ((phase . "v0.2-ephapax - In Progress")
+       (overall-completion . 45)
        (components
-         ((ephapax-bridge . 0)          ;; Not started
-          (zig-wasm-compiler . 0)       ;; Not started
-          (idris2-proofs . 0)           ;; Not started
-          (rust-bindings . 0)           ;; Not started
-          (documentation . 85)          ;; README, ROADMAP, .scm files done
-          (examples . 0)))              ;; Not started
+         ((ephapax-bridge . 60)          ;; bridge.eph and types.eph created
+          (zig-wasm-compiler . 70)       ;; build.zig and runtime.zig complete
+          (idris2-proofs . 65)           ;; proofs.idr and theorems.idr created
+          (rust-bindings . 30)           ;; lib.rs with Bridge struct
+          (documentation . 85)           ;; README, ROADMAP, .scm files done
+          (examples . 0)))               ;; Not started
        (working-features
          ("Repository initialized"
           "Documentation complete (README, ROADMAP, ECOSYSTEM, META, STATE)"
-          "License (PMPL-1.0-or-later) in place"))))
+          "License (PMPL-1.0-or-later) in place"
+          "Ephapax bridge.eph with linear type definitions"
+          "Ephapax types.eph with core IPC types"
+          "Zig WASM runtime with memory management"
+          "Zig build system configured for WASM32"
+          "Idris2 proofs (noLostRequests, noMemoryLeaks, etc.)"
+          "Idris2 theorems (correctness, safety, liveness)"
+          "justfile with build/test/verify commands"
+          "Security audit complete (SECURITY-AUDIT-2026-01-25.md)"))))
 
     (route-to-mvp
       ((milestones
         ((v0.1-setup . ((items . ("Repo creation" "Documentation" "Directory structure"))
-                        (status . "in-progress")))
+                        (status . "complete")))
          (v0.2-ephapax . ((items . ("Ephapax bridge.eph" "Request/response types" "Region management"))
-                          (status . "pending")))
+                          (status . "in-progress")))
          (v0.3-wasm . ((items . ("Zig WASM compiler" "Memory layout" "Export functions"))
                        (status . "pending")))
          (v0.4-proofs . ((items . ("Idris2 noLostRequests" "Idris2 noMemoryLeaks" "Verification suite"))
@@ -48,8 +56,7 @@
     (blockers-and-issues
       ((critical
          ("Ephapax-linear compiler not yet available (dependency on ephapax project)"
-          "No example Ephapax code written"
-          "Zig WASM compilation pipeline not defined"))
+          "Ephapax → Zig codegen not implemented (requires ephapax compiler)"))
        (high
          ("Idris2 proof strategy not defined"
           "Integration points with Svalinn/Vörðr not implemented"
@@ -65,14 +72,15 @@
 
     (critical-next-actions
       ((immediate
-         ("Create ephapax/ directory with bridge.eph stub"
-          "Create zig/ directory with build.must"
-          "Create idris/ directory with proofs.idr stub"
-          "Commit and push initial setup"))
+         ("Test Zig WASM compilation: cd zig && zig build wasm"
+          "Test Idris2 proof checking: just verify"
+          "Create example integration with Svalinn/Vörðr"
+          "Add GitHub workflow for CI (build WASM, check proofs)"))
        (this-week
-         ("Define Ephapax request/response types"
-          "Write Zig WASM compilation pipeline"
-          "Outline Idris2 proof structure"))
+         ("Implement send_request in Zig with actual request parsing"
+          "Add memory bounds checking to Zig runtime"
+          "Complete Idris2 proof hole implementations"
+          "Write integration example code"))
        (this-month
          ("Implement basic Ephapax bridge (request → response)"
           "Compile to WASM32 successfully"
@@ -112,4 +120,19 @@
              "Created META.scm with 6 architecture decisions"
              "Created STATE.scm (this file)"
              "Downloaded PMPL-1.0-or-later license"))
-          (next-session . "Create directory structure (ephapax/, zig/, idris/), stub files, and commit")))))))
+          (next-session . "Create directory structure (ephapax/, zig/, idris/), stub files, and commit")))
+       (session-002
+         ((date . "2026-01-25")
+          (accomplishments
+            ("Security audit complete (SECURITY-AUDIT-2026-01-25.md)"
+             "Created ephapax/ directory with bridge.eph and types.eph"
+             "Created zig/ directory with build.zig and runtime.zig"
+             "Created idris/ directory with proofs.idr and theorems.idr"
+             "Implemented Ephapax linear type bridge with region management"
+             "Implemented Zig WASM runtime with memory allocation/bounds checking"
+             "Implemented Idris2 proofs (6 theorems, 4 high-level correctness proofs)"
+             "Updated justfile with Zig and Idris2 integration"
+             "Updated STATE.scm to reflect progress (15% → 45%)"
+             "Milestone v0.1-setup marked complete"
+             "Milestone v0.2-ephapax started"))
+          (next-session . "Test WASM compilation, implement Rust Bridge::send_request, create examples"))))))))

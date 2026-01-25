@@ -1,15 +1,18 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 # justfile for selur
 
-# Build selur.wasm from Ephapax-linear
+# Build selur.wasm from Zig (Ephapax compiler not ready yet)
 build:
     @echo "Building selur.wasm..."
-    must zig/build.must selur.wasm
+    cd zig && zig build wasm
 
 # Run tests
 test:
+    @echo "Running Rust tests..."
     cargo test
-    must zig/build.must test
+    @echo "Verifying Idris2 proofs..."
+    cd idris && idris2 --check proofs.idr
+    cd idris && idris2 --check theorems.idr
 
 # Check code quality
 check:
@@ -22,8 +25,9 @@ fmt:
 
 # Clean build artifacts
 clean:
-    must zig/build.must clean
+    cd zig && zig build clean || true
     cargo clean
+    rm -rf zig/zig-out zig/zig-cache
 
 # Generate docs
 docs:
@@ -36,4 +40,10 @@ bench:
 # Verify Idris2 proofs
 verify:
     @echo "Verifying Idris2 proofs..."
-    cd idris && idris2 --build proofs.idr
+    cd idris && idris2 --check proofs.idr
+    cd idris && idris2 --check theorems.idr
+    @echo "✓ All proofs verified"
+
+# List all tasks
+list:
+    @just --list

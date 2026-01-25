@@ -1,36 +1,72 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 //
-// Ephapax-linear bridge definition for zero-copy IPC between Svalinn and Vörðr
+// Ephapax-linear bridge between Svalinn and Vörðr
+// Zero-copy IPC via WASM linear memory
 
-// Core types for request/response handling
-type Request = {
-    method: String,
-    path: String,
-    headers: Map<String, String>,
-    body: Bytes
-}
+module selur.bridge
 
-type Response = {
-    status: Int,
-    headers: Map<String, String>,
-    body: Bytes
-}
+// Import core types
+import selur.types (Request, Response, Region)
 
-// Linear region for zero-copy IPC
-region r:
-  // Consume a request from Svalinn (edge gateway)
-  let req = Svalinn.receive_request@r()
+// Define the main bridge function with linear types
+// The @r region annotation ensures zero-copy semantics
+bridge :: Region r => Request@r -> Response@r
+bridge req =
+  // Step 1: Receive request from Svalinn (consumes req@r)
+  let validated_req = validate_request req in
 
-  // Delegate to Vörðr (container runtime) with zero-copy
-  let resp = Vordr.handle_request@r(req)
+  // Step 2: Delegate to Vörðr (zero-copy via shared memory)
+  let response = vordr_handle validated_req in
 
-  // Return response to Svalinn
-  Svalinn.send_response@r(resp)
+  // Step 3: Return response to Svalinn (transfers ownership)
+  response
 
-// Policy validation (shared between Svalinn and Vörðr)
-region policy:
-  let validate_request@policy(req: Request) -> Bool =
-    let has_valid_auth = check_jwt@policy(req.headers)
-    let has_valid_sbom = verify_sbom@policy(req)
-    has_valid_auth && has_valid_sbom
+// Validate request before processing
+// Ensures type safety and bounds checking
+validate_request :: Request@r -> Request@r
+validate_request req =
+  if request_size req > MAX_REQUEST_SIZE then
+    error "Request too large"
+  else if request_size req == 0 then
+    error "Empty request"
+  else
+    req
+
+// Delegate to Vörðr container runtime
+// This is where the actual container operation happens
+vordr_handle :: Request@r -> Response@r
+vordr_handle req =
+  // Extract command from request
+  let cmd = request_command req in
+
+  // Dispatch based on command type
+  case cmd of
+    CreateContainer config ->
+      create_container config
+    StartContainer id ->
+      start_container id
+    StopContainer id ->
+      stop_container id
+    InspectContainer id ->
+      inspect_container id
+    _ ->
+      error_response "Unknown command"
+
+// Container operations (to be implemented by Vörðr)
+create_container :: ContainerConfig@r -> Response@r
+start_container :: ContainerId@r -> Response@r
+stop_container :: ContainerId@r -> Response@r
+inspect_container :: ContainerId@r -> Response@r
+error_response :: String -> Response@r
+
+// Constants
+MAX_REQUEST_SIZE :: Int
+MAX_REQUEST_SIZE = 1048576  -- 1 MB
+
+// Helper functions for request introspection
+request_size :: Request@r -> Int
+request_command :: Request@r -> Command@r
+
+// Export bridge function for WASM compilation
+export bridge
