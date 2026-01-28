@@ -7,7 +7,7 @@
 :icons: font
 :source-highlighter: rouge
 
-image:https://img.shields.io/badge/license-Palimpsest--MPL--1.0-purple.svg[License: PMPL-1.0-or-later,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 image:https://img.shields.io/badge/WASM-Zig-orange.svg[WASM,link="https://ziglang.org"]
 image:https://img.shields.io/badge/Ephapax-linear-green.svg[Ephapax,link="https://github.com/hyperpolymath/ephapax"]
 
