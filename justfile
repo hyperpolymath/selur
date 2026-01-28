@@ -98,3 +98,63 @@ publish-sv:
 clean-sv:
     podman rmi selur-sv:{{VERSION}} || true
     podman rmi selur-sv:latest || true
+
+# ============================================================
+# Glued Build: selur(svalinn+vordr+ct)
+# ============================================================
+
+# Build glued image (complete stack: svalinn + vordr + ct)
+build-sv-ct:
+    @echo "🔗🏔️  Building selur(svalinn+vordr+ct) complete stack..."
+    podman build -f containerfiles/selur-sv-ct.containerfile \
+      -t selur-sv-ct:{{VERSION}} \
+      -t selur-sv-ct:latest \
+      --build-context vordr=../vordr \
+      --build-context svalinn=../svalinn \
+      --build-context cerro-torre=../cerro-torre \
+      .
+
+# Test glued deployment
+test-sv-ct:
+    @echo "🧪 Testing selur-sv-ct complete stack..."
+    podman run -d --name test-svct -p 8000:8000 selur-sv-ct:latest
+    sleep 5
+    curl -f http://localhost:8000/healthz || (podman logs test-svct && exit 1)
+    podman exec test-svct ct --version || (podman logs test-svct && exit 1)
+    @echo "✅ Health check passed, Cerro Torre available"
+    podman stop test-svct && podman rm test-svct
+
+# Run glued image locally
+run-sv-ct:
+    @echo "🚀 Running selur-sv-ct..."
+    podman run -d \
+      -p 8000:8000 \
+      -v selur-data:/var/lib/selur-sv \
+      -v selur-trust:/etc/selur \
+      -v selur-cache:/var/cache/ct \
+      --name selur-sv-ct \
+      selur-sv-ct:latest
+    @echo "✅ Running at http://localhost:8000"
+    @echo "🏔️  Cerro Torre available: podman exec selur-sv-ct ct --help"
+
+# Stop glued image
+stop-sv-ct:
+    podman stop selur-sv-ct || true
+    podman rm selur-sv-ct || true
+
+# Publish glued image
+publish-sv-ct:
+    @echo "📤 Publishing selur-sv-ct..."
+    podman push selur-sv-ct:{{VERSION}} ghcr.io/hyperpolymath/selur-sv-ct:{{VERSION}}
+    podman push selur-sv-ct:latest ghcr.io/hyperpolymath/selur-sv-ct:latest
+
+# Clean glued build artifacts
+clean-sv-ct:
+    podman rmi selur-sv-ct:{{VERSION}} || true
+    podman rmi selur-sv-ct:latest || true
+
+# Build all variants (welded + glued)
+build-all: build-sv build-sv-ct
+
+# Clean all variants
+clean-all: clean-sv clean-sv-ct
